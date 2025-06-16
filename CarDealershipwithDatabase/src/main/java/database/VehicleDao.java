@@ -9,7 +9,14 @@ import java.util.List;
 
 public class VehicleDao {
     private DataSource dataSource;
-
+    int vin;
+    String make;
+    int year;
+    String model;
+    String vehicleType;
+    String color;
+    int odometer;
+    double price;
     public VehicleDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -38,7 +45,7 @@ public class VehicleDao {
 
             if (rs.next()) {
                 do {
-                    Vehicle vehicle = new Vehicle();
+                    Vehicle vehicle = new Vehicle(vin, make, year,  model,vehicleType,  color, odometer, price);
                     vehicle.setVin(Integer.parseInt(rs.getString("VIN")));
                     vehicle.setMake(rs.getString("make"));
                     vehicle.setModel(rs.getString("model"));
@@ -56,7 +63,7 @@ public class VehicleDao {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Error fetching vehicles by price range.");
+            System.err.println(" Error fetching vehicles by price range.");
             e.printStackTrace();
         }
         return new ArrayList<>();
@@ -64,6 +71,33 @@ public class VehicleDao {
 
     public List<Vehicle> searchByMakeModel(String make, String model) {
         // TODO: Implement the logic to search vehicles by make and model
+
+            List<Vehicle> vehicles = new ArrayList<>();
+            String sql = "SELECT VIN, make, model, year, SOLD, color, vehicleType, odometer, price " +
+                    "FROM vehicles WHERE make = ? AND model = ?";
+
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+                stmt.setString(1, make);
+                stmt.setString(2, model);
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    do {
+                        Vehicle vehicle = createVehicleFromResultSet(rs);
+                        vehicles.add(vehicle);
+                    } while (rs.next());
+                } else {
+                    System.out.println("No vehicles found for: " + make + " " + model);
+                }
+
+            } catch (SQLException e) {
+                System.err.println("❌ Error fetching vehicles by make/model.");
+                e.printStackTrace();
+            }
+
         return new ArrayList<>();
     }
 
@@ -88,8 +122,8 @@ public class VehicleDao {
     }
 
     private Vehicle createVehicleFromResultSet(ResultSet resultSet) throws SQLException {
-        Vehicle vehicle = new Vehicle();
-        vehicle.setVin(resultSet.getString("VIN"));
+        Vehicle vehicle = new Vehicle( vin, make, year,  model,vehicleType,  color, odometer, price);
+        vehicle.setVin(Integer.parseInt(resultSet.getString("VIN")));
         vehicle.setMake(resultSet.getString("make"));
         vehicle.setModel(resultSet.getString("model"));
         vehicle.setYear(resultSet.getInt("year"));
