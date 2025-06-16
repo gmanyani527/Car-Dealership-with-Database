@@ -94,7 +94,7 @@ public class VehicleDao {
                 }
 
             } catch (SQLException e) {
-                System.err.println("❌ Error fetching vehicles by make/model.");
+                System.err.println(" Error fetching vehicles by make/model.");
                 e.printStackTrace();
             }
 
@@ -123,7 +123,7 @@ public class VehicleDao {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Error fetching vehicles by year range.");
+            System.err.println(" Error fetching vehicles by year range.");
             e.printStackTrace();
         }
         return vehicles;
@@ -131,7 +131,30 @@ public class VehicleDao {
 
     public List<Vehicle> searchByColor(String color) {
         // TODO: Implement the logic to search vehicles by color
-        return new ArrayList<>();
+        List<Vehicle> vehicles = new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE color = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, color);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                do {
+                    vehicles.add(createVehicleFromResultSet(rs));
+                } while (rs.next());
+            } else {
+                System.out.println("No vehicles found with color: " + color);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(" Error fetching vehicles by color.");
+            e.printStackTrace();
+        }
+
+        return vehicles;
     }
 
     public List<Vehicle> searchByMileageRange(int minMileage, int maxMileage) {
