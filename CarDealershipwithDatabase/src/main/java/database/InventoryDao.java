@@ -9,6 +9,7 @@ public class InventoryDao {
     private DataSource dataSource;
 
     public InventoryDao(DataSource dataSource) {
+
         this.dataSource = dataSource;
     }
 
