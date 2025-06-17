@@ -14,6 +14,7 @@ public class VehicleDao {
     int year;
     String model;
     String vehicleType;
+    boolean sold;
     String color;
     int odometer;
     double price;
@@ -23,6 +24,33 @@ public class VehicleDao {
 
     public void addVehicle(Vehicle vehicle) {
         // TODO: Implement the logic to add a vehicle
+        String sql = "INSERT INTO vehicles (VIN, make, model, year, SOLD, color, vehicleType, odometer, price) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, vehicle.getVin());
+            stmt.setString(2, vehicle.getMake());
+            stmt.setString(3, vehicle.getModel());
+            stmt.setInt(4, vehicle.getYear());
+            stmt.setBoolean(5, vehicle.isSold());
+            stmt.setString(6, vehicle.getColor());
+            stmt.setString(7, vehicle.getVehicleType());
+            stmt.setInt(8, vehicle.getOdometer());
+            stmt.setDouble(9, vehicle.getPrice());
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println(" Vehicle added successfully: " + vehicle.getVin());
+            } else {
+                System.out.println(" Vehicle not added.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println(" Error adding vehicle.");
+            e.printStackTrace();
+        }
     }
 
     public void removeVehicle(String VIN) {
@@ -45,7 +73,7 @@ public class VehicleDao {
 
             if (rs.next()) {
                 do {
-                    Vehicle vehicle = new Vehicle(vin, make, year,  model,vehicleType,  color, odometer, price);
+                    Vehicle vehicle = new Vehicle(vin, make, year,  model,vehicleType, sold,  color, odometer, price);
                     vehicle.setVin(Integer.parseInt(rs.getString("VIN")));
                     vehicle.setMake(rs.getString("make"));
                     vehicle.setModel(rs.getString("model"));
@@ -179,7 +207,7 @@ public class VehicleDao {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Error fetching vehicles by mileage range.");
+            System.err.println(" Error fetching vehicles by mileage range.");
             e.printStackTrace();
         }
 
@@ -207,7 +235,7 @@ public class VehicleDao {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Error fetching vehicles by type.");
+            System.err.println(" Error fetching vehicles by type.");
             e.printStackTrace();
         }
 
@@ -215,7 +243,7 @@ public class VehicleDao {
     }
 
     private Vehicle createVehicleFromResultSet(ResultSet resultSet) throws SQLException {
-        Vehicle vehicle = new Vehicle( vin, make, year,  model,vehicleType,  color, odometer, price);
+        Vehicle vehicle = new Vehicle( vin, make, year,  model,vehicleType, sold,  color, odometer, price);
         vehicle.setVin(Integer.parseInt(resultSet.getString("VIN")));
         vehicle.setMake(resultSet.getString("make"));
         vehicle.setModel(resultSet.getString("model"));

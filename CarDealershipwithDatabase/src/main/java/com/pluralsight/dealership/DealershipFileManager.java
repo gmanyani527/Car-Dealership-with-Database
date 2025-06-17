@@ -38,11 +38,12 @@ public class DealershipFileManager {
                 int year = Integer.parseInt(parts[2]);
                 String model = parts[3];
                 String vehicleType = parts[4];
-                String color = parts[5];
-                int odometer = Integer.parseInt(parts[6]);
-                double price = Double.parseDouble(parts[7]);
+                boolean sold = Boolean.parseBoolean(parts[5]);
+                String color = parts[6];
+                int odometer = Integer.parseInt(parts[7]);
+                double price = Double.parseDouble(parts[8]);
 
-                Vehicle vehicle = new Vehicle(vin, make, year, model, vehicleType, color, odometer, price);
+                Vehicle vehicle = new Vehicle(vin, make, year, model, vehicleType,sold, color, odometer, price);
 
                 dealership.addVehicle(vehicle);
             }

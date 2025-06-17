@@ -204,6 +204,9 @@ private Dealership dealership1;
         System.out.print("Enter Vehicle Type: ");
         String type = scanner.nextLine();
 
+        System.out.println("Is it sold?: ");
+        boolean sold = scanner.hasNextBoolean();
+
         System.out.print("Enter Color: ");
         String color = scanner.nextLine();
 
@@ -214,7 +217,7 @@ private Dealership dealership1;
         double price = Double.parseDouble(scanner.nextLine());
 
         // Match constructor order: vin, year, make, model, type, color, odometer, price
-        Vehicle newVehicle = new Vehicle(vin, make, year, model, type, color, odometer, price);
+        Vehicle newVehicle = new Vehicle(vin, make, year, model, type, sold, color, odometer, price);
 
 
         dealership1.addVehicle(newVehicle);
@@ -231,9 +234,9 @@ private Dealership dealership1;
         ArrayList<Vehicle> results = dealership1.getAllVehicles();
 
         System.out.print("Enter VIN number: ");
-        int vin = Integer.parseInt(scanner.nextLine());
+        String vin = scanner.nextLine();
         for (Vehicle vehicle : results) {
-            if(vin == vehicle.getVin()){
+            if (vin.equals(vehicle.getVin())) {
                 toRemove = vehicle;
                 break;
             }
