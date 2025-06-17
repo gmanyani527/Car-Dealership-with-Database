@@ -159,12 +159,59 @@ public class VehicleDao {
 
     public List<Vehicle> searchByMileageRange(int minMileage, int maxMileage) {
         // TODO: Implement the logic to search vehicles by mileage range
-        return new ArrayList<>();
+        List<Vehicle> vehicles = new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE odometer BETWEEN ? AND ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, minMileage);
+            stmt.setInt(2, maxMileage);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                do {
+                    vehicles.add(createVehicleFromResultSet(rs));
+                } while (rs.next());
+            } else {
+                System.out.println("No vehicles found in mileage range: " + minMileage + " - " + maxMileage);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error fetching vehicles by mileage range.");
+            e.printStackTrace();
+        }
+
+        return vehicles;
     }
 
     public List<Vehicle> searchByType(String type) {
         // TODO: Implement the logic to search vehicles by type
-        return new ArrayList<>();
+        List<Vehicle> vehicles = new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE vehicleType = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, type);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                do {
+                    vehicles.add(createVehicleFromResultSet(rs));
+                } while (rs.next());
+            } else {
+                System.out.println("No vehicles found of type: " + type);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error fetching vehicles by type.");
+            e.printStackTrace();
+        }
+
+        return vehicles;
     }
 
     private Vehicle createVehicleFromResultSet(ResultSet resultSet) throws SQLException {
