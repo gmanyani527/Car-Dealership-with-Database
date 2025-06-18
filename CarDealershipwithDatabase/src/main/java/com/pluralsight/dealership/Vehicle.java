@@ -2,7 +2,7 @@ package com.pluralsight.dealership;
 
 public class Vehicle {
 
-    private int vin;
+    private String vin;
     private String make;
     private int year;
     private String model;
@@ -12,7 +12,7 @@ public class Vehicle {
     private double price;
     private boolean sold;
 
-    public Vehicle(int vin, String make, int year, String model, String vehicleType, boolean sold, String color, int odometer, double price) {
+    public Vehicle(String vin, String make, int year, String model, String vehicleType, boolean sold, String color, int odometer, double price) {
         this.vin = vin;
         this.make = make;
         this.year = year;
@@ -26,11 +26,11 @@ public class Vehicle {
 
 
 
-    public int getVin() {
+    public String getVin() {
         return vin;
     }
 
-    public void setVin(int vin) {
+    public void setVin(String vin) {
         this.vin = vin;
     }
 

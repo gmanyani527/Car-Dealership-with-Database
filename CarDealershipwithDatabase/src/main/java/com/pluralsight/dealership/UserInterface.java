@@ -119,7 +119,7 @@ private Dealership dealership1;
         System.out.println("---------------------------------------------------------------------------------------------");
 
         for (Vehicle v : vehicles) {
-            System.out.printf("| %-7d | %-4d | %-10s | %-10s | %-8s | %-8s | %-8d | $%-9.2f |\n",
+            System.out.printf("| %-7s | %-4d | %-10s | %-10s | %-8s | %-8s | %-8d | $%-9.2f |\n",
                     v.getVin(), v.getYear(), v.getMake(), v.getModel(),
                     v.getVehicleType(), v.getColor(), v.getOdometer(), v.getPrice());
         }
@@ -191,7 +191,7 @@ private Dealership dealership1;
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter VIN number: ");
-        int vin = Integer.parseInt(scanner.nextLine());
+        String vin = scanner.nextLine();
 
         System.out.print("Enter Year: ");
         int year = Integer.parseInt(scanner.nextLine());

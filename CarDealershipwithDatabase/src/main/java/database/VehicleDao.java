@@ -9,7 +9,7 @@ import java.util.List;
 
 public class VehicleDao {
     private DataSource dataSource;
-    int vin;
+    String vin;
     String make;
     int year;
     String model;
@@ -93,7 +93,7 @@ public class VehicleDao {
             if (rs.next()) {
                 do {
                     Vehicle vehicle = new Vehicle(vin, make, year,  model,vehicleType, sold,  color, odometer, price);
-                    vehicle.setVin(Integer.parseInt(rs.getString("VIN")));
+                    vehicle.setVin(rs.getString("vin"));
                     vehicle.setMake(rs.getString("make"));
                     vehicle.setModel(rs.getString("model"));
                     vehicle.setYear(rs.getInt("year"));
@@ -262,7 +262,7 @@ public class VehicleDao {
     }
 
     private Vehicle createVehicleFromResultSet(ResultSet resultSet) throws SQLException {
-        int vin = Integer.parseInt(resultSet.getString("VIN"));
+        String vin = resultSet.getString("VIN");
         String make = resultSet.getString("make");
         String model = resultSet.getString("model");
         int year = resultSet.getInt("year");

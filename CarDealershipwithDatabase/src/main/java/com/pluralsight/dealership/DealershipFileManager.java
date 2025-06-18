@@ -33,7 +33,7 @@ public class DealershipFileManager {
                     System.out.println("Skipping bad line: " + line);
                     continue; // skip invalid lines
                 }
-                int vin = Integer.parseInt(parts[0]);
+                String vin = (parts[0]);
                 String make = parts[1];
                 int year = Integer.parseInt(parts[2]);
                 String model = parts[3];
