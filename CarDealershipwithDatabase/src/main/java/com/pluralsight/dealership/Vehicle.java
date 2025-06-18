@@ -26,7 +26,7 @@ public class Vehicle {
 
 
 
-    public String getVin() {
+    public int getVin() {
         return vin;
     }
 

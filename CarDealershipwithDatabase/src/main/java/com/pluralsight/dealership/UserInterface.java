@@ -243,8 +243,8 @@ private Dealership dealership1;
             }
         }
         if(toRemove != null){
-            dealership1.removeVehicle(toRemove);
-            dealership.saveDealership(dealership1);
+            vehicleDao.removeVehicle(vin);
+            System.out.println("Vehicle with VIN " + vin + " removed if it existed.");
             System.out.println("Vehicle removed successfully");
         } else{
             System.out.println("Vehicle with a vin " + vin + " not found");
@@ -253,13 +253,10 @@ private Dealership dealership1;
     }
 
     public void printWelcomeBanner() {
-        System.out.println("==============================================================");
-        System.out.println("||                                                          ||");
-        System.out.printf ("||        WELCOME TO %-39s||\n", dealership1.getName().toUpperCase());
-        System.out.printf ("||        ADDRESS: %-41s||\n", dealership1.getAddress());
-        System.out.printf ("||        PHONE:   %-41s||\n", dealership1.getPhone());
-        System.out.println("||                                                          ||");
-        System.out.println("==============================================================");
+        System.out.println("||        WELCOME TO DATABASE-POWERED DEALERSHIP           ||");
+        System.out.println("||        ADDRESS: 123 Java St, SQL City                    ||");
+        System.out.println("||        PHONE:   (555) 123-4567                           ||");
+
     }
 
 

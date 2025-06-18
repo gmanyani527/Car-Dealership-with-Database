@@ -30,7 +30,7 @@ public class VehicleDao {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, vehicle.getVin());
+            stmt.setString(1, String.valueOf(vehicle.getVin()));
             stmt.setString(2, vehicle.getMake());
             stmt.setString(3, vehicle.getModel());
             stmt.setInt(4, vehicle.getYear());
@@ -113,7 +113,7 @@ public class VehicleDao {
             System.err.println(" Error fetching vehicles by price range.");
             e.printStackTrace();
         }
-        return new ArrayList<>();
+        return vehicles;
     }
 
     public List<Vehicle> searchByMakeModel(String make, String model) {
@@ -262,16 +262,39 @@ public class VehicleDao {
     }
 
     private Vehicle createVehicleFromResultSet(ResultSet resultSet) throws SQLException {
-        Vehicle vehicle = new Vehicle( vin, make, year,  model,vehicleType, sold,  color, odometer, price);
-        vehicle.setVin(Integer.parseInt(resultSet.getString("VIN")));
-        vehicle.setMake(resultSet.getString("make"));
-        vehicle.setModel(resultSet.getString("model"));
-        vehicle.setYear(resultSet.getInt("year"));
-        vehicle.setSold(resultSet.getBoolean("SOLD"));
-        vehicle.setColor(resultSet.getString("color"));
-        vehicle.setVehicleType(resultSet.getString("vehicleType"));
-        vehicle.setOdometer(resultSet.getInt("odometer"));
-        vehicle.setPrice(resultSet.getDouble("price"));
-        return vehicle;
+        int vin = Integer.parseInt(resultSet.getString("VIN"));
+        String make = resultSet.getString("make");
+        String model = resultSet.getString("model");
+        int year = resultSet.getInt("year");
+        boolean sold = resultSet.getBoolean("SOLD");
+        String color = resultSet.getString("color");
+        String vehicleType = resultSet.getString("vehicleType");
+        int odometer = resultSet.getInt("odometer");
+        double price = resultSet.getDouble("price");
+
+        return new Vehicle(vin, make, year, model, vehicleType, sold, color, odometer, price);
+
     }
+    public List<Vehicle> getAllVehicles() {
+        List<Vehicle> vehicles = new ArrayList<>();
+        String sql = "SELECT * FROM vehicles";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                vehicles.add(createVehicleFromResultSet(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println(" Error retrieving all vehicles.");
+            e.printStackTrace();
+        }
+
+        return vehicles;
+    }
+
+
+
 }
