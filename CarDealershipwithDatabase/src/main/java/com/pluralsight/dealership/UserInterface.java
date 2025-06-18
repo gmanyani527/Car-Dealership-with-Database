@@ -1,11 +1,20 @@
 package com.pluralsight.dealership;
 
+import database.*;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import javax.sql.DataSource;
+
 public class UserInterface {
 
 private DealershipFileManager dealership;
 private Dealership dealership1;
+    private VehicleDao vehicleDao;
+    private InventoryDao inventoryDao;
+    private SalesDao salesDao;
+    private LeaseDao leaseDao;
 
     public void display(){
         init();
@@ -89,12 +98,16 @@ private Dealership dealership1;
 
 
     private void init(){
-        dealership = new DealershipFileManager();
-        dealership1 = dealership.getDealership();
+        DataSource dataSource = DatabaseConfig.getDataSource(); // Assuming you created DatabaseConfig.java
+
+        vehicleDao = new VehicleDao(dataSource);
+        inventoryDao = new InventoryDao(dataSource);
+        salesDao = new SalesDao(dataSource);
+        leaseDao = new LeaseDao(dataSource);
 
     }
 
-    private void displayVehicles(ArrayList<Vehicle> vehicles){
+    private void displayVehicles(List<Vehicle> vehicles){
         if (vehicles == null || vehicles.isEmpty()) {
             System.out.println("No vehicles found.");
             return;
@@ -126,8 +139,7 @@ private Dealership dealership1;
         String highStr = scanner.nextLine().replace(",", "").trim();
         double price2 = Double.parseDouble(highStr);
 
-        ArrayList<Vehicle> results = dealership1.getVehiclesByPrice(price1, price2);
-        displayVehicles(results);
+        displayVehicles(vehicleDao.searchByPriceRange(price1 , price2));
     }
 
     public void processGetByMakeModelRequest(){
@@ -136,9 +148,7 @@ private Dealership dealership1;
        String make = scanner.nextLine();
         System.out.println("Enter the model you want to search for: ");
         String model = scanner.nextLine();
-        ArrayList<Vehicle> results = dealership1.getVehicleByMakeModel(make, model);
-
-        displayVehicles(results);
+        displayVehicles(vehicleDao.searchByMakeModel(make, model));
     }
 
     public void processGetByYearRequest(){
@@ -147,43 +157,34 @@ private Dealership dealership1;
         int minYear = scanner.nextInt();
         System.out.println("Enter the latest model year to include: ");
         int maxYear = scanner.nextInt();
-        ArrayList<Vehicle> results = dealership1.getVehicleByYear(minYear, maxYear);
-
-        displayVehicles(results);
+        displayVehicles(vehicleDao.searchByYearRange(minYear, maxYear));
     }
 
     public void processGetByColorRequest(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter color your want to search for: ");
         String color = scanner.nextLine();
-        ArrayList<Vehicle> results = dealership1.getVehicleByColor(color);
-
-        displayVehicles(results);
+        displayVehicles(vehicleDao.searchByColor(color));
     }
 
     public void processGetByMileageRequest(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter car minimum mileage your want to search for: ");
-        double minMileage = scanner.nextDouble();
+        int minMileage = scanner.nextInt();
         System.out.println("Enter car maximum mileage your want to search for: ");
-        double maxMileage = scanner.nextDouble();
-        ArrayList<Vehicle> results = dealership1.getVehicleByMileage(minMileage, maxMileage);
-
-        displayVehicles(results);
+        int maxMileage = scanner.nextInt();
+        displayVehicles(vehicleDao.searchByMileageRange(minMileage, maxMileage));
     }
 
     public void processGetByVehicleTypeRequest(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter car type your want to search for: ");
         String type = scanner.nextLine();
-        ArrayList<Vehicle> results = dealership1.getVehicleByType(type);
-
-        displayVehicles(results);
+        displayVehicles(vehicleDao.searchByType(type));
     }
 
     public void processGetAllVehicleRequest(){
-        ArrayList<Vehicle> allVehicles = dealership1.getAllVehicles();
-        displayVehicles(allVehicles);
+        displayVehicles(vehicleDao.getAllVehicles());
     }
 
     public void processAddVehicleRequest(){
