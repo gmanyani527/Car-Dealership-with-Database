@@ -105,6 +105,10 @@ private Dealership dealership1;
         salesDao = new SalesDao(dataSource);
         leaseDao = new LeaseDao(dataSource);
 
+        dealership1 = new Dealership("Database Dealership", "123 SQL Street", "555-555-5555");
+     //   dealership = new DealershipFileManager();
+     //   dealership1 = dealership.getDealership();
+
     }
 
     private void displayVehicles(List<Vehicle> vehicles){
@@ -206,7 +210,7 @@ private Dealership dealership1;
         String type = scanner.nextLine();
 
         System.out.println("Is it sold?: ");
-        boolean sold = scanner.hasNextBoolean();
+        boolean sold = Boolean.parseBoolean(scanner.nextLine());
 
         System.out.print("Enter Color: ");
         String color = scanner.nextLine();
@@ -221,33 +225,34 @@ private Dealership dealership1;
         Vehicle newVehicle = new Vehicle(vin, make, year, model, type, sold, color, odometer, price);
 
 
-        dealership1.addVehicle(newVehicle);
-        dealership.saveDealership(dealership1);
-        System.out.println("Vehicle saved successfully");
+        vehicleDao.addVehicle(newVehicle);
+        inventoryDao.addVehicleToInventory(vin, 1); //
+
+        System.out.println("✅ Vehicle added successfully to the database.");
 
     }
 
     public void processRemoveVehicleRequest(){
-        processGetAllVehicleRequest();
-        Vehicle toRemove = null;
+        List<Vehicle> results = vehicleDao.getAllVehicles();
+        displayVehicles(results);
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Vehicle> results = dealership1.getAllVehicles();
-
         System.out.print("Enter VIN number: ");
         String vin = scanner.nextLine();
+
+        Vehicle toRemove = null;
         for (Vehicle vehicle : results) {
-            if (vin.equals(vehicle.getVin())) {
+            if (vin.trim().equalsIgnoreCase(vehicle.getVin().trim())) {
                 toRemove = vehicle;
                 break;
             }
         }
-        if(toRemove != null){
-            vehicleDao.removeVehicle(vin);
-            System.out.println("Vehicle with VIN " + vin + " removed if it existed.");
-            System.out.println("Vehicle removed successfully");
-        } else{
-            System.out.println("Vehicle with a vin " + vin + " not found");
+
+        if (toRemove != null) {
+            vehicleDao.removeVehicle(toRemove.getVin());  // use actual VIN to be safe
+            System.out.println("Vehicle with VIN " + toRemove.getVin() + " removed.");
+        } else {
+            System.out.println("Vehicle with VIN " + vin + " not found.");
         }
 
     }
